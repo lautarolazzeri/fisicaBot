@@ -183,7 +183,9 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
         </div>
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-blue-400" />
-          <span className="text-xs text-zinc-500 font-mono">v1.0.0</span>
+          <span className="text-xs text-zinc-500 font-mono">
+            Gemini-3-flash-preview
+          </span>
         </div>
       </div>
 
@@ -286,7 +288,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
                 ) : (
                   <FileText className="w-3 h-3" />
                 )}
-                <span className="max-w-[100px] truncate">{att.name}</span>
+                <span className="max-w-25 truncate">{att.name}</span>
                 <button
                   onClick={() => removeAttachment(i)}
                   className="hover:text-red-400"
@@ -309,7 +311,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
           <Button
             onClick={() => fileInputRef.current?.click()}
             variant="outline"
-            className="bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-500 transition-colors duration-300 ease-in-out h-[46px] w-[46px] p-0 rounded-xl"
+            className="bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-500 transition-colors duration-300 ease-in-out h-11.5 w-11.5 p-0 rounded-xl"
           >
             <Paperclip className="w-5 h-5" />
           </Button>
@@ -323,7 +325,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
           <Button
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 h-[46px] transition-all active:scale-95"
+            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 h-11.5 transition-all active:scale-95"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />

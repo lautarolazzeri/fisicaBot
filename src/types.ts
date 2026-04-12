@@ -23,7 +23,6 @@ export interface GraphData {
 export interface EvaluationMetric {
   id: string;
   name: string;
-  score: number; // 0 to 5
   comment: string;
   timestamp: Date;
 }
