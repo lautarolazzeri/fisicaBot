@@ -1,0 +1,5 @@
+{
+  "name": "PhyTutor AI",
+  "description": "Asistente inteligente de física especializado en cinemática, dinámica, energía y conservación. Proporciona explicaciones paso a paso y gráficos interactivos.",
+  "requestFramePermissions": []
+}
