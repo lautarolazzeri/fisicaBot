@@ -22,8 +22,8 @@ export default function App() {
   };
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full">
-      <div className="flex-1 overflow-y-auto py-4">
+    <div className="flex flex-col h-full pb-20">
+      <div className="flex-1 overflow-y-auto">
         <Tabs defaultValue="resources" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-zinc-950 border border-zinc-800 p-1 mb-6">
             <TabsTrigger
@@ -74,7 +74,7 @@ export default function App() {
           </div>
         </div>
 
-        <div className="flex-1 overflow-hidden p-6">
+        <div className="flex-1  p-6">
           <SidebarContent />
         </div>
       </aside>
@@ -106,7 +106,7 @@ export default function App() {
               side="left"
               className="bg-zinc-950 border-zinc-800 text-zinc-100 w-80 p-6"
             >
-              <SheetHeader className="mb-6 text-left">
+              <SheetHeader className="text-left">
                 <SheetTitle className="text-zinc-100 flex items-center gap-2">
                   <Atom className="w-5 h-5 text-blue-500" />
                   Fisica Bot
@@ -118,7 +118,7 @@ export default function App() {
         </header>
 
         {/* Chat Container */}
-        <div className="flex-1 p-4 lg:p-8 max-w-5xl mx-auto w-full flex flex-col min-h-0">
+        <div className="flex-1  lg:p-8 max-w-5xl mx-auto w-full flex flex-col min-h-0 ">
           <Chat onFilesUploaded={handleFilesUploaded} />
 
           <footer className="mt-4 text-center shrink-0">

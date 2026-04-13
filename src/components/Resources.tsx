@@ -80,7 +80,7 @@ export const Resources: React.FC<ResourcesProps> = ({ files = [] }) => {
         ))}
       </div>
 
-      <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl">
+      <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-8">
         <p className="text-xs text-blue-300 leading-relaxed">
           {hasUploadedFiles
             ? "El asistente está utilizando prioritariamente la información de los archivos cargados para responder tus consultas."
