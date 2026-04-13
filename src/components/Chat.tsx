@@ -18,6 +18,8 @@ import { chatWithGemini } from "../services/gemini";
 import { GraphView } from "./GraphView";
 import { cn } from "../lib/utils";
 import ReactMarkdown from "react-markdown";
+import remarkMath from "remark-math";
+import rehypeKatex from "rehype-katex";
 
 interface ChatProps {
   onFilesUploaded?: (files: Attachment[]) => void;
@@ -219,7 +221,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
               >
                 <div
                   className={cn(
-                    "p-4 rounded-2xl text-xs lg:text-md leading-relaxed",
+                    "p-4 rounded-2xl text-sm leading-relaxed",
                     m.role === "user"
                       ? "bg-zinc-800 text-zinc-100 rounded-tr-none"
                       : "bg-zinc-900/50 border border-zinc-800 text-zinc-200 rounded-tl-none",
@@ -229,7 +231,10 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
                     <div key={i}>
                       {part.type === "text" ? (
                         <div className="markdown-body prose prose-invert prose-sm max-w-none">
-                          <ReactMarkdown>
+                          <ReactMarkdown
+                            remarkPlugins={[remarkMath]}
+                            rehypePlugins={[rehypeKatex]}
+                          >
                             {part.content as string}
                           </ReactMarkdown>
                         </div>
