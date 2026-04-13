@@ -13,8 +13,8 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "../ui/scroll-area";
 import { Button } from "../ui/button";
-import { Message, GraphData, Attachment } from "@/src/types";
-import { chatWithGemini } from "@/src/services/gemini";
+import { Message, GraphData, Attachment } from "../types";
+import { chatWithGemini } from "../services/gemini";
 import { GraphView } from "./GraphView";
 import { cn } from "../lib/utils";
 import ReactMarkdown from "react-markdown";
@@ -43,7 +43,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
     if (scrollRef.current) {
       scrollRef.current.scrollIntoView({ behavior: "smooth" });
     }
-  }, [messages]);
+  }, [messages, isLoading]);
 
   const parseContent = (content: string) => {
     const graphRegex = /```json\s*([\s\S]*?)\s*```/g;
@@ -183,19 +183,19 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
         </div>
         <div className="md:flex items-center gap-2 hidden">
           <Sparkles className="w-4 h-4 text-blue-400" />
-          <span className="text-xs text-zinc-500 font-mono">
+          <span className="text-xs text-zinc-500 font-mono text-right">
             Gemini-3-flash-preview
           </span>
         </div>
       </div>
 
-      <ScrollArea className="flex-1 p-6">
+      <ScrollArea className="flex-1 p-4 lg:p-6 min-h-0">
         <div className="space-y-8">
           {messages.map((m) => (
             <div
               key={m.id}
               className={cn(
-                "flex gap-4 sm:gap-3",
+                "flex gap-4",
                 m.role === "user" ? "flex-row-reverse" : "flex-row",
               )}
             >
@@ -219,7 +219,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
               >
                 <div
                   className={cn(
-                    "p-4 rounded-2xl text-sm leading-relaxed",
+                    "p-4 rounded-2xl text-xs lg:text-md leading-relaxed",
                     m.role === "user"
                       ? "bg-zinc-800 text-zinc-100 rounded-tr-none"
                       : "bg-zinc-900/50 border border-zinc-800 text-zinc-200 rounded-tl-none",
@@ -288,7 +288,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
                 ) : (
                   <FileText className="w-3 h-3" />
                 )}
-                <span className="max-w-25 truncate">{att.name}</span>
+                <span className="max-w-[100px] truncate">{att.name}</span>
                 <button
                   onClick={() => removeAttachment(i)}
                   className="hover:text-red-400"
