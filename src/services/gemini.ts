@@ -10,7 +10,7 @@ export const CUSTOM_KNOWLEDGE_BASE = `
 - El asistente usará esta información como prioridad.
 `;
 
-export const SYSTEM_PROMPT = `Eres PhyTutor AI, un asistente experto en física para estudiantes universitarios y de secundaria.
+export const SYSTEM_PROMPT = `Eres Fisica Bot, un asistente experto en física para estudiantes universitarios y de secundaria.
 Tu objetivo es resolver, explicar y analizar problemas de física con precisión y claridad pedagógica.
 
 CONOCIMIENTO ADICIONAL (Prioridad):

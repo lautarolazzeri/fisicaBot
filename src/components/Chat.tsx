@@ -29,7 +29,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
       id: "1",
       role: "model",
       content:
-        "¡Hola! Soy PhyTutor AI. Estoy aquí para ayudarte con problemas de cinemática, dinámica, energía y más. ¿En qué puedo asistirte hoy?",
+        "¡Hola! Soy el bot de Fisica. Estoy aquí para ayudarte con problemas de cinemática, dinámica, energía y más. ¿En qué puedo asistirte hoy?",
       timestamp: new Date(),
     },
   ]);
@@ -172,7 +172,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
             <Bot className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h2 className="text-sm font-bold text-zinc-100">PhyTutor AI</h2>
+            <h2 className="text-sm font-bold text-zinc-100">Fisica Bot</h2>
             <div className="flex items-center gap-1.5">
               <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
               <span className="text-[10px] text-zinc-400 uppercase tracking-wider font-medium">
@@ -181,7 +181,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
             </div>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="md:flex items-center gap-2 hidden">
           <Sparkles className="w-4 h-4 text-blue-400" />
           <span className="text-xs text-zinc-500 font-mono">
             Gemini-3-flash-preview
@@ -195,7 +195,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
             <div
               key={m.id}
               className={cn(
-                "flex gap-4",
+                "flex gap-4 sm:gap-3",
                 m.role === "user" ? "flex-row-reverse" : "flex-row",
               )}
             >
@@ -299,7 +299,7 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
             ))}
           </div>
         )}
-        <div className="relative flex items-center gap-2">
+        <div className="relative flex items-center gap-2 w-full">
           <input
             type="file"
             ref={fileInputRef}
@@ -311,26 +311,26 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
           <Button
             onClick={() => fileInputRef.current?.click()}
             variant="outline"
-            className="bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-500 transition-colors duration-300 ease-in-out h-11.5 w-11.5 p-0 rounded-xl"
+            className="bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-500 w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 p-0 rounded-xl"
           >
-            <Paperclip className="w-5 h-5" />
+            <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
-            placeholder="Escribe tu problema o sube un archivo..."
-            className="flex-1 bg-zinc-950 border border-zinc-800 rounded-xl px-4 py-3 text-sm text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all"
+            placeholder="Escribe tu problema..."
+            className="flex-1 min-w-0 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
           />
           <Button
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-4 h-11.5 transition-all active:scale-95"
+            className="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 sm:w-auto sm:px-4 flex-shrink-0 rounded-xl"
           >
             {isLoading ? (
-              <Loader2 className="w-5 h-5 animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : (
-              <Send className="w-5 h-5" />
+              <Send className="w-4 h-4 sm:w-5 sm:h-5" />
             )}
           </Button>
         </div>
