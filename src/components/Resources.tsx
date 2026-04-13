@@ -1,5 +1,10 @@
 import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 import { BookOpen, Database, FileText, GraduationCap } from "lucide-react";
 import { Attachment } from "../types";
 

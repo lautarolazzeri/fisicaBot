@@ -2,15 +2,15 @@ import { useState } from "react";
 import { Chat } from "./components/Chat";
 import { Resources } from "./components/Resources";
 import { UserGuide } from "./components/UserGuide";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./components/ui/tabs";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
   SheetHeader,
   SheetTitle,
-} from "./ui/sheet";
-import { Button } from "./ui/button";
+} from "./components/ui/sheet";
+import { Button } from "./components/ui/button";
 import { Atom, BookOpen, Info, Menu } from "lucide-react";
 import { Attachment } from "./types";
 

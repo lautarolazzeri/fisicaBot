@@ -11,8 +11,8 @@ import {
   FileText,
   Image as ImageIcon,
 } from "lucide-react";
-import { ScrollArea } from "../ui/scroll-area";
-import { Button } from "../ui/button";
+import { ScrollArea } from "./ui/scroll-area";
+import { Button } from "./ui/button";
 import { Message, GraphData, Attachment } from "../types";
 import { chatWithGemini } from "../services/gemini";
 import { GraphView } from "./GraphView";

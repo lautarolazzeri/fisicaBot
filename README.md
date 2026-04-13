@@ -1,20 +1,53 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 🚀 Fisica Bot
 
-# Run and deploy your AI Studio app
+Aplicación web de chat interactivo orientada a la resolución de problemas de física, con soporte para texto,
+archivos y visualización de gráficos.
 
-This contains everything you need to run your app locally.
+---
 
-View your app in AI Studio: https://ai.studio/apps/488e39e1-a194-4bf4-a354-da04c2d64460
+## 📌 Descripción
 
-## Run Locally
+**Fisica Bot** es una plataforma que permite a los usuarios consultar problemas de física (cinemática, dinámica, energía, etc.)
+y recibir respuestas generadas por IA.
 
-**Prerequisites:**  Node.js
+Incluye:
 
+- Chat en tiempo real
+- Soporte para archivos (imágenes y texto)
+- Renderizado de Markdown
+- Visualización de gráficos dinámicos
+- UI moderna y responsive
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+## 🛠️ Tecnologías utilizadas
+
+- React + TypeScript
+- Vite
+- TailwindCSS
+- Base UI (ScrollArea)
+- Lucide Icons
+- React Markdown
+- Gemini API
+
+---
+
+## ⚙️ Instalación
+
+1. Clonar el repositorio:
+
+git clone https://github.com/lautarolazzeri/fisicaBot
+
+2. Crear archivo .env.local con variable de entorno
+   GEMINI_API_KEY=APIKEY
+
+3. Instalar el paquete de dependencias
+
+````bash
+npm install
+
+4. Inicializar el repo local
+
+```bash
+npm run dev
+````
