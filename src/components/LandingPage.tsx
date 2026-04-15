@@ -110,19 +110,19 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
               Proyecto de Física 2026
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-8 bg-clip-text text-transparent bg-linear-to-b from-white to-zinc-500">
-              El futuro del aprendizaje <br /> de la
+              Asistente de apoyo <br /> para
               <span className="text-blue-500"> Física Universitaria</span>
             </h1>
             <p className="max-w-2xl mx-auto text-zinc-400 text-lg md:text-xl leading-relaxed mb-12">
-              Un asistente inteligente entrenado con bibliografía clásica para
-              resolver, explicar y analizar problemas de mecánica clásica con
-              precisión pedagógica.
+              Orientado a la resolución y comprensión de problemas de mecánica
+              clásica, con explicaciones claras basadas en bibliografía
+              académica.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
                 onClick={onStartChat}
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8 h-14 text-lg group"
+                className="bg-blue-600 cursor-pointer hover:bg-blue-700 text-white rounded-full px-8 h-14 text-lg group"
               >
                 Comenzar a Chatear
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
@@ -130,7 +130,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
               <Button
                 size="lg"
                 variant="outline"
-                className="border-zinc-800 bg-zinc-900/50 hover:bg-zinc-800 rounded-full px-8 h-14 text-lg"
+                className="border-zinc-800 cursor-pointer bg-zinc-900/50 hover:bg-zinc-800 hover:text-zinc-200 rounded-full px-8 h-14 text-lg"
               >
                 Ver Documentación
               </Button>
@@ -155,8 +155,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
                   Chat Interactivo
                 </h3>
                 <p className="text-zinc-400 leading-relaxed">
-                  Interfaz fluida con soporte para LaTeX y gráficos dinámicos
-                  para una comprensión visual completa.
+                  Interfaz que permite la resolución de problemas con soporte
+                  para notación LaTeX y representación gráfica, facilitando la
+                  comprensión de los conceptos involucrados.
                 </p>
               </CardContent>
             </Card>
@@ -169,8 +170,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
                   Base de Conocimiento
                 </h3>
                 <p className="text-zinc-400 leading-relaxed">
-                  Entrenado específicamente con Sears-Zemansky, Serway y Resnick
-                  para garantizar rigor académico.
+                  Desarrollado a partir de bibliografía clásica de Física, como
+                  Sears-Zemansky, Serway y Resnick, garantizando un enfoque
+                  consistente con los contenidos académicos.
                 </p>
               </CardContent>
             </Card>
@@ -227,7 +229,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
       <section id="download" className="relative py-32 px-6 bg-blue-600">
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl font-extrabold text-white mb-8 tracking-tight">
-            ¿Quieres conocer los detalles técnicos?
+            Informe técnico del proyecto
           </h2>
           <p className="text-blue-100 text-lg mb-12 leading-relaxed">
             Descarga el informe completo de la realización del chatbot, donde
