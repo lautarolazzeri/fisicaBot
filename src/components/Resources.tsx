@@ -7,12 +7,19 @@ import {
 } from "@/src/components/ui/card";
 import { BookOpen, Database, FileText, GraduationCap } from "lucide-react";
 import { Attachment } from "../types";
+import { Switch } from "./ui/switch";
 
 interface ResourcesProps {
   files?: Attachment[];
+  webSearchEnabled: boolean;
+  onToggleWebSearch: (value: boolean) => void;
 }
 
-export const Resources: React.FC<ResourcesProps> = ({ files = [] }) => {
+export const Resources: React.FC<ResourcesProps> = ({
+  files = [],
+  webSearchEnabled,
+  onToggleWebSearch,
+}) => {
   const defaultResources = [
     {
       title: "Física Universitaria",
@@ -83,6 +90,19 @@ export const Resources: React.FC<ResourcesProps> = ({ files = [] }) => {
             </CardContent>
           </Card>
         ))}
+      </div>
+
+      <div className="flex items-center justify-between p-3 bg-zinc-900/50 border border-zinc-800 rounded-xl">
+        <div>
+          <p className="text-sm text-zinc-200 font-medium">Búsqueda web</p>
+          <p className="text-xs text-zinc-500">
+            Permite complementar la respuesta con información externa
+          </p>
+        </div>
+        <Switch
+          checked={webSearchEnabled}
+          onCheckedChange={onToggleWebSearch}
+        />
       </div>
 
       <div className="p-4 bg-blue-500/10 border border-blue-500/20 rounded-xl mb-8">

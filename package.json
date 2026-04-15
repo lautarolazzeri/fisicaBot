@@ -14,12 +14,16 @@
     "@base-ui/react": "^1.3.0",
     "@fontsource-variable/geist": "^5.2.8",
     "@google/genai": "^1.29.0",
+    "@radix-ui/react-switch": "^1.2.6",
     "@tailwindcss/vite": "^4.1.14",
+    "@vercel/node": "^5.7.7",
     "@vitejs/plugin-react": "^5.0.4",
+    "axios": "^1.15.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
-    "dotenv": "^17.2.3",
-    "express": "^4.21.2",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^4.22.1",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "react": "^19.0.0",
@@ -42,5 +46,18 @@
     "tsx": "^4.21.0",
     "typescript": "~5.8.2",
     "vite": "^6.2.0"
-  }
+  },
+  "description": "Aplicación web de chat interactivo orientada a la resolución de problemas de física, con soporte para texto, archivos y visualización de gráficos.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lautarolazzeri/fisicaBot.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lautarolazzeri/fisicaBot/issues"
+  },
+  "homepage": "https://github.com/lautarolazzeri/fisicaBot#readme"
 }

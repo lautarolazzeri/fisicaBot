@@ -23,9 +23,13 @@ import rehypeKatex from "rehype-katex";
 
 interface ChatProps {
   onFilesUploaded?: (files: Attachment[]) => void;
+  webSearchEnabled: boolean;
 }
 
-export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
+export const Chat: React.FC<ChatProps> = ({
+  onFilesUploaded,
+  webSearchEnabled,
+}) => {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -140,7 +144,10 @@ export const Chat: React.FC<ChatProps> = ({ onFilesUploaded }) => {
     setIsLoading(true);
 
     try {
-      const response = await chatWithGemini([...messages, userMessage]);
+      const response = await chatWithGemini(
+        [...messages, userMessage],
+        webSearchEnabled,
+      );
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),

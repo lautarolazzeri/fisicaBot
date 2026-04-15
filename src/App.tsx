@@ -17,6 +17,8 @@ import { Attachment } from "./types";
 
 export default function App() {
   const [uploadedFiles, setUploadedFiles] = useState<Attachment[]>([]);
+  const [webSearchEnabled, setWebSearchEnabled] = useState(false);
+
   const [showChat, setShowChat] = useState(false);
 
   const handleFilesUploaded = (files: Attachment[]) => {
@@ -45,7 +47,11 @@ export default function App() {
           </TabsList>
 
           <TabsContent value="resources" className="mt-0">
-            <Resources files={uploadedFiles} />
+            <Resources
+              files={uploadedFiles}
+              webSearchEnabled={webSearchEnabled}
+              onToggleWebSearch={setWebSearchEnabled}
+            />
           </TabsContent>
 
           <TabsContent value="evaluation" className="mt-0">
@@ -131,7 +137,10 @@ export default function App() {
 
         {/* Chat Container */}
         <div className="flex-1 p-4 lg:p-8 max-w-5xl mx-auto w-full flex flex-col min-h-0">
-          <Chat onFilesUploaded={handleFilesUploaded} />
+          <Chat
+            onFilesUploaded={handleFilesUploaded}
+            webSearchEnabled={webSearchEnabled}
+          />
 
           <footer className="mt-4 text-center shrink-0">
             <button
