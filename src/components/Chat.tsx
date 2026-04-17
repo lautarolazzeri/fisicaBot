@@ -13,13 +13,14 @@ import {
 } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Button } from "./ui/button";
-import { Message, GraphData, Attachment } from "../types";
+import { Message, GraphData, Attachment, SimulationData } from "../types";
 import { chatWithGemini } from "../services/gemini";
 import { GraphView } from "./GraphView";
 import { cn } from "../lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
+import { SimulationView } from "./SimulationView";
 
 interface ChatProps {
   onFilesUploaded?: (files: Attachment[]) => void;
@@ -70,6 +71,8 @@ export const Chat: React.FC<ChatProps> = ({
         const jsonData = JSON.parse(match[1]);
         if (jsonData.type === "graph") {
           parts.push({ type: "graph", data: jsonData as GraphData });
+        } else if (jsonData.type === "simulation") {
+          parts.push({ type: "simulation", data: jsonData as SimulationData });
         } else {
           parts.push({ type: "text", content: match[0] });
         }
@@ -245,6 +248,8 @@ export const Chat: React.FC<ChatProps> = ({
                             {part.content as string}
                           </ReactMarkdown>
                         </div>
+                      ) : part.type === "simulation" ? (
+                        <SimulationView data={part.data as SimulationData} />
                       ) : (
                         <GraphView graph={part.data as GraphData} />
                       )}
