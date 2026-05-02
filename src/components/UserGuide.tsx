@@ -9,7 +9,7 @@ import { Info } from "lucide-react";
 
 export const UserGuide: React.FC = () => {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 mb-12">
       <h2 className="text-2xl font-bold text-zinc-100 flex items-center gap-2">
         <Info className="w-6 h-6 text-blue-400" />
         Guía de Uso
@@ -33,7 +33,7 @@ export const UserGuide: React.FC = () => {
         </CardContent>
       </Card>
 
-      <Card className="bg-zinc-900/50 border-zinc-800">
+      <Card className="bg-zinc-900/50 border-zinc-800 ">
         <CardHeader>
           <CardTitle className="text-lg text-zinc-200">
             Consejos para Mejores Resultados

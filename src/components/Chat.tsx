@@ -11,25 +11,34 @@ import {
   FileText,
   Image as ImageIcon,
 } from "lucide-react";
-import { ScrollArea } from "./ui/scroll-area";
-import { Button } from "./ui/button";
-import { Message, GraphData, Attachment, SimulationData } from "../types";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { Button } from "../components/ui/button";
+import {
+  Message,
+  GraphData,
+  Attachment,
+  SimulationData,
+  InteractiveSimulationData,
+} from "../types";
 import { chatWithGemini } from "../services/gemini";
 import { GraphView } from "./GraphView";
+import { SimulationView } from "./SimulationView";
 import { cn } from "../lib/utils";
 import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
-import { SimulationView } from "./SimulationView";
+import { InteractiveSimulationView } from "./ui/InteractiveSimulationView";
 
 interface ChatProps {
   onFilesUploaded?: (files: Attachment[]) => void;
-  webSearchEnabled: boolean;
+  contextFiles?: Attachment[];
+  webSearchEnabled?: boolean;
 }
 
 export const Chat: React.FC<ChatProps> = ({
   onFilesUploaded,
-  webSearchEnabled,
+  contextFiles = [],
+  webSearchEnabled = false,
 }) => {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -73,6 +82,11 @@ export const Chat: React.FC<ChatProps> = ({
           parts.push({ type: "graph", data: jsonData as GraphData });
         } else if (jsonData.type === "simulation") {
           parts.push({ type: "simulation", data: jsonData as SimulationData });
+        } else if (jsonData.type === "interactive") {
+          parts.push({
+            type: "interactive",
+            data: jsonData as InteractiveSimulationData,
+          });
         } else {
           parts.push({ type: "text", content: match[0] });
         }
@@ -94,11 +108,11 @@ export const Chat: React.FC<ChatProps> = ({
     const files = e.target.files;
     if (!files) return;
 
-    const newAttachments: Attachment[] = [];
     for (const file of Array.from(files)) {
       const reader = new FileReader();
 
-      if (file.type.startsWith("image/")) {
+      // Handle images and PDFs as base64
+      if (file.type.startsWith("image/") || file.type === "application/pdf") {
         reader.onload = (event) => {
           const att = {
             name: file.name,
@@ -110,6 +124,7 @@ export const Chat: React.FC<ChatProps> = ({
         };
         reader.readAsDataURL(file);
       } else {
+        // Handle text-based files
         reader.onload = (event) => {
           const att = {
             name: file.name,
@@ -150,6 +165,7 @@ export const Chat: React.FC<ChatProps> = ({
       const response = await chatWithGemini(
         [...messages, userMessage],
         webSearchEnabled,
+        contextFiles,
       );
 
       const aiMessage: Message = {
@@ -178,7 +194,7 @@ export const Chat: React.FC<ChatProps> = ({
 
   return (
     <div className="flex flex-col h-full bg-zinc-950 rounded-2xl border border-zinc-800 overflow-hidden shadow-2xl">
-      <div className="p-4 border-bottom border-zinc-800 bg-zinc-900/50 flex items-center justify-between">
+      <div className="p-4 border-b border-zinc-800 bg-zinc-900/50 flex items-center justify-between">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-900/20">
             <Bot className="w-6 h-6 text-white" />
@@ -213,7 +229,7 @@ export const Chat: React.FC<ChatProps> = ({
             >
               <div
                 className={cn(
-                  "w-8 h-8 rounded-full flex items-center justify-center shrink-0",
+                  "w-8 h-8  rounded-full flex items-center justify-center shrink-0",
                   m.role === "user" ? "bg-zinc-800" : "bg-blue-600/20",
                 )}
               >
@@ -240,7 +256,7 @@ export const Chat: React.FC<ChatProps> = ({
                   {parseContent(m.content).map((part, i) => (
                     <div key={i}>
                       {part.type === "text" ? (
-                        <div className="markdown-body prose prose-invert prose-sm max-w-none">
+                        <div className="markdown-body text-xs md:text-sm prose prose-invert prose-sm max-w-none">
                           <ReactMarkdown
                             remarkPlugins={[remarkMath]}
                             rehypePlugins={[rehypeKatex]}
@@ -250,6 +266,10 @@ export const Chat: React.FC<ChatProps> = ({
                         </div>
                       ) : part.type === "simulation" ? (
                         <SimulationView data={part.data as SimulationData} />
+                      ) : part.type === "interactive" ? (
+                        <InteractiveSimulationView
+                          data={part.data as InteractiveSimulationData}
+                        />
                       ) : (
                         <GraphView graph={part.data as GraphData} />
                       )}
@@ -305,7 +325,7 @@ export const Chat: React.FC<ChatProps> = ({
                 ) : (
                   <FileText className="w-3 h-3" />
                 )}
-                <span className="max-w-[100px] truncate">{att.name}</span>
+                <span className="max-w-25 truncate">{att.name}</span>
                 <button
                   onClick={() => removeAttachment(i)}
                   className="hover:text-red-400"
@@ -323,12 +343,12 @@ export const Chat: React.FC<ChatProps> = ({
             onChange={handleFileChange}
             className="hidden"
             multiple
-            accept="image/*,.txt,.md,.csv,.json"
+            accept="image/*,application/pdf,.txt,.md,.csv,.json"
           />
           <Button
             onClick={() => fileInputRef.current?.click()}
             variant="outline"
-            className="bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-500 w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0 p-0 rounded-xl"
+            className="bg-zinc-950 border-zinc-800 text-zinc-400 hover:text-zinc-500 w-10 h-10 sm:w-11 sm:h-11 shrink-0 p-0 rounded-xl"
           >
             <Paperclip className="w-4 h-4 sm:w-5 sm:h-5" />
           </Button>
@@ -337,12 +357,12 @@ export const Chat: React.FC<ChatProps> = ({
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && handleSend()}
             placeholder="Escribe tu problema..."
-            className="flex-1 min-w-0 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-sm text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
+            className="flex-1 min-w-0 bg-zinc-950 border border-zinc-800 rounded-xl px-3 py-2.5 text-xs sm:px-4 sm:py-3 sm:text-sm text-zinc-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none"
           />
           <Button
             onClick={handleSend}
             disabled={!input.trim() || isLoading}
-            className="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 sm:w-auto sm:px-4 flex-shrink-0 rounded-xl"
+            className="bg-blue-600 hover:bg-blue-700 text-white w-10 h-10 sm:w-auto sm:px-4 shrink-0 rounded-xl"
           >
             {isLoading ? (
               <Loader2 className="w-4 h-4 animate-spin" />

@@ -46,6 +46,17 @@ REGLAS DE COMPORTAMIENTO:
     }
     ${"```"}
 
+11. SIMULACIONES INTERACTIVAS AVANZADAS: Si el problema es complejo, prefiere generar una simulación interactiva completa utilizando HTML/Canvas/p5.js. Estas simulaciones se renderizarán en un iframe.
+    Usa el siguiente formato JSON:
+    ${"```json"}
+    {
+      "type": "interactive",
+      "title": "Simulación Dinámica de [Tutoría]",
+      "html": "<!DOCTYPE html><html><head>...</head><body><canvas id='sim'></canvas><script>...</script></body></html>"
+    }
+    ${"```"}
+    IMPORTANTE: El código HTML debe ser autocontenido (puedes usar CDNs para librerías como p5.js: https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.1/p5.min.js) y visualmente atractivo (usa colores oscuros/zinc para que combine con la app).
+
 FORMATO DE RESPUESTA PARA GRÁFICOS:
 Si vas a generar datos para un gráfico, incluye un bloque de código JSON con la siguiente estructura:
 ${"```json"}

@@ -49,9 +49,22 @@ export interface SimulationData {
   };
 }
 
+export interface InteractiveSimulationData {
+  type: "interactive";
+  title: string;
+  html: string; // Full HTML code for the simulation
+}
+
+export type ContentPart =
+  | { type: "text"; content: string }
+  | { type: "graph"; data: GraphData }
+  | { type: "simulation"; data: SimulationData }
+  | { type: "interactive"; data: InteractiveSimulationData };
+
 export interface EvaluationMetric {
   id: string;
   name: string;
+  score: number; // 0 to 5
   comment: string;
   timestamp: Date;
 }

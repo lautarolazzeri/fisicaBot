@@ -336,7 +336,7 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
       <div className="overflow-x-auto overflow-y-hidden w-full custom-scrollbar">
         <div
           ref={sceneRef}
-          className="relative cursor-crosshair h-[300px]"
+          className="relative cursor-crosshair h-75"
           style={{ width: worldWidth }}
         />
       </div>
