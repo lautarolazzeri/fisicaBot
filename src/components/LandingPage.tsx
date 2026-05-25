@@ -127,13 +127,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
                 Comenzar a Chatear
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-zinc-800 cursor-pointer bg-zinc-900/50 hover:bg-zinc-800 hover:text-zinc-200 rounded-full px-8 h-14 text-lg"
-              >
-                Ver Documentación
-              </Button>
+              <a href="/Informe.pdf" download="Informe_Tecnico_FisicaBot.pdf">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-zinc-800 cursor-pointer bg-zinc-900/50 hover:bg-zinc-800 hover:text-zinc-200 rounded-full px-8 h-14 text-lg"
+                >
+                  Ver Documentación
+                </Button>
+              </a>
             </div>
           </motion.div>
         </div>
@@ -236,13 +238,15 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
             detallamos la arquitectura, el entrenamiento del modelo y los
             resultados obtenidos.
           </p>
-          <Button
-            size="lg"
-            className="bg-white text-blue-600 hover:bg-zinc-100 rounded-full px-10 h-16 text-xl font-bold shadow-2xl shadow-blue-900/40"
-          >
-            <Download className="w-6 h-6 mr-3" />
-            Descargar Informe (PDF)
-          </Button>
+          <a href="/Informe.pdf" download="Informe_Tecnico_FisicaBot.pdf">
+            <Button
+              size="lg"
+              className="bg-white text-blue-600 hover:bg-zinc-100 rounded-full px-10 h-16 text-xl font-bold shadow-2xl shadow-blue-900/40"
+            >
+              <Download className="w-6 h-6 mr-3" />
+              Descargar Informe (PDF)
+            </Button>
+          </a>
         </div>
       </section>
 
@@ -254,20 +258,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
             <span className="font-bold tracking-tight">Fisica Bot AI</span>
           </div>
           <p className="text-zinc-600 text-sm">© 2026 Proyecto de Física.</p>
-          <div className="flex items-center gap-6">
-            <a
-              href="https://github.com/lautarolazzeri/fisicaBot"
-              className="text-zinc-500 hover:text-zinc-100 transition-colors"
-            >
-              <Github className="w-5 h-5" />
-            </a>
-            <a
-              href="#"
-              className="text-zinc-500 hover:text-zinc-100 transition-colors"
-            >
-              <ExternalLink className="w-5 h-5" />
-            </a>
-          </div>
         </div>
       </footer>
     </div>
