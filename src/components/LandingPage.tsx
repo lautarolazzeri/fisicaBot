@@ -127,7 +127,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
                 Comenzar a Chatear
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <a href="./Informe.pdf" download="Informe_Tecnico_FisicaBot.pdf">
+              <a
+                href="https://docs.google.com/document/d/1mWcXq4hWLPzGma5hUQj3oFPd-RhvN3ys_Ai9plmxzqA/edit?tab=t.0"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 <Button
                   size="lg"
                   variant="outline"
@@ -238,7 +242,11 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
             detallamos la arquitectura, el entrenamiento del modelo y los
             resultados obtenidos.
           </p>
-          <a href="/Informe.pdf" download="Informe_Tecnico_FisicaBot.pdf">
+          <a
+            href="https://docs.google.com/document/d/1mWcXq4hWLPzGma5hUQj3oFPd-RhvN3ys_Ai9plmxzqA/edit?tab=t.0"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             <Button
               size="lg"
               className="bg-white text-blue-600 hover:bg-zinc-100 rounded-full px-10 h-16 text-xl font-bold shadow-2xl shadow-blue-900/40"
