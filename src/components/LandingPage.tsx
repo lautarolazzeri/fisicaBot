@@ -127,7 +127,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
                 Comenzar a Chatear
                 <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <a href="/Informe.pdf" download="Informe_Tecnico_FisicaBot.pdf">
+              <a href="./Informe.pdf" download="Informe_Tecnico_FisicaBot.pdf">
                 <Button
                   size="lg"
                   variant="outline"
