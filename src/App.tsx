@@ -79,10 +79,10 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-lg font-bold tracking-tight group-hover:text-blue-400 transition-colors">
-                Fisica Bot AI <span className="text-blue-500">AI</span>
+                Fisica Bot <span className="text-blue-500">AI</span>
               </h1>
               <p className="text-[10px] text-zinc-500 uppercase tracking-[0.2em] font-semibold">
-                Mecánica Clásica
+                Física 1 - UNS
               </p>
             </div>
           </div>

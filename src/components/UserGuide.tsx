@@ -27,8 +27,7 @@ export const UserGuide: React.FC = () => {
           </p>
           <p>
             Ejemplo: "¿Cómo calculo la fuerza neta en un bloque en una
-            pendiente?" o "Sube tu PDF de apuntes para que pueda ayudarte con
-            tus dudas específicas."
+            pendiente?"
           </p>
         </CardContent>
       </Card>

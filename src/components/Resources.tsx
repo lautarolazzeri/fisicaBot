@@ -28,15 +28,14 @@ export const Resources: React.FC<ResourcesProps> = ({
   onToggleWebSearch,
 }) => {
   const defaultResources = [
-    { title: "Física Universitaria", author: "Serway & Jewett", type: "Libro" },
     {
-      title: "Física para Ciencias e Ingeniería",
-      author: "Giancoli",
+      title: "Física Universitaria",
+      author: "Sears & Zemansky",
       type: "Libro",
     },
     {
-      title: "Apuntes de Cátedra: Mecánica Clásica",
-      author: "Facultad de Ingeniería",
+      title: "Apuntes de Cátedra",
+      author: "Estudiantes grupo 6",
       type: "Apunte",
     },
   ];
@@ -91,9 +90,9 @@ export const Resources: React.FC<ResourcesProps> = ({
               <CardContent className="p-4 flex items-start gap-3">
                 <div className="p-2 bg-zinc-800 rounded-lg shrink-0">
                   {res.type === "Libro" ? (
-                    <GraduationCap className="w-4 h-4 text-zinc-500" />
+                    <GraduationCap className="w-4 h-4 text-orange-400" />
                   ) : (
-                    <FileText className="w-4 h-4 text-zinc-500" />
+                    <FileText className="w-4 h-4 text-green-500" />
                   )}
                 </div>
                 <div>

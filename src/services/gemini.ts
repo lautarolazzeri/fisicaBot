@@ -2,6 +2,7 @@ import { searchWeb } from "./webSearch";
 import { getSystemPrompt } from "./prompt";
 import { Attachment, Message } from "../types";
 import { GoogleGenAI } from "@google/genai";
+import { CUSTOM_KNOWLEDGE_BASE } from "./CUSTOM_KNOWLEDGE_BASE";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
@@ -11,6 +12,49 @@ export async function chatWithGemini(
   contextFiles: Attachment[] = [],
 ) {
   try {
+    const forbiddenTopics = [
+      "electricidad",
+      "eléctrico",
+      "electrico",
+      "campo eléctrico",
+      "campo electrico",
+      "coulomb",
+      "capacitor",
+      "condensador",
+      "corriente",
+      "voltaje",
+      "tensión eléctrica",
+      "potencial eléctrico",
+      "potencial electrico",
+      "resistencia eléctrica",
+      "electromagnetismo",
+      "magnetismo",
+      "campo magnético",
+      "campo magnetico",
+      "faraday",
+      "maxwell",
+      "óptica",
+      "optica",
+      "lentes",
+      "espejos",
+      "relatividad",
+      "einstein",
+      "cuántica",
+      "cuantica",
+      "schrodinger",
+      "bohr",
+      "atomo",
+      "átomo",
+      "nuclear",
+      "radiactividad",
+    ];
+
+    const query = messages[messages.length - 1]?.content?.toLowerCase() ?? "";
+
+    if (forbiddenTopics.some((topic) => query.includes(topic))) {
+      return "Este tema no pertenece al programa de Física 1.";
+    }
+
     const contents = messages.map((m) => {
       const parts: any[] = [{ text: m.content || " " }];
 
@@ -74,24 +118,32 @@ export async function chatWithGemini(
 
     if (webSearchEnabled && webContext) {
       // Inyectar contexto web como un mensaje del sistema/usuario al principio
-      contents.unshift({
-        role: "user",
-        parts: [
-          {
-            text: `INFORMACIÓN EXTERNA (usar como complemento):\n${webContext}`,
-          },
-        ],
-      });
-      // Importante: No podemos tener dos mensajes seguidos de 'user' según la API de Gemini (dependiendo de la versión/SDK)
-      // Pero usualmente se puede manejar agrupando. Para simplificar, lo añadimos al primer mensaje si existe.
+      const lastUserContent =
+        contents[contents.length - 1]?.parts?.[0]?.text ?? "";
+
+      contents[contents.length - 1].parts[0].text = `
+        INFORMACIÓN WEB COMPLEMENTARIA:
+
+        ${webContext}
+
+        PREGUNTA DEL USUARIO:
+
+        ${lastUserContent}
+        `;
     }
 
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
       contents,
       config: {
-        systemInstruction: getSystemPrompt(webSearchEnabled),
-        temperature: 0.7,
+        systemInstruction: `
+        ${getSystemPrompt(webSearchEnabled)}
+
+        BASE DE CONOCIMIENTO:
+
+        ${CUSTOM_KNOWLEDGE_BASE}
+        `,
+        temperature: 0.3,
       },
     });
     return response.text;

@@ -28,6 +28,7 @@ import ReactMarkdown from "react-markdown";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { InteractiveSimulationView } from "./ui/InteractiveSimulationView";
+import { DiagramView } from "./DiagramView";
 
 interface ChatProps {
   onFilesUploaded?: (files: Attachment[]) => void;
@@ -79,16 +80,30 @@ export const Chat: React.FC<ChatProps> = ({
       try {
         const jsonData = JSON.parse(match[1]);
         if (jsonData.type === "graph") {
-          parts.push({ type: "graph", data: jsonData as GraphData });
+          parts.push({
+            type: "graph",
+            data: jsonData as GraphData,
+          });
         } else if (jsonData.type === "simulation") {
-          parts.push({ type: "simulation", data: jsonData as SimulationData });
+          parts.push({
+            type: "simulation",
+            data: jsonData as SimulationData,
+          });
         } else if (jsonData.type === "interactive") {
           parts.push({
             type: "interactive",
             data: jsonData as InteractiveSimulationData,
           });
+        } else if (jsonData.type === "diagram") {
+          parts.push({
+            type: "diagram",
+            data: jsonData,
+          });
         } else {
-          parts.push({ type: "text", content: match[0] });
+          parts.push({
+            type: "text",
+            content: match[0],
+          });
         }
       } catch (e) {
         parts.push({ type: "text", content: match[0] });
@@ -270,6 +285,8 @@ export const Chat: React.FC<ChatProps> = ({
                         <InteractiveSimulationView
                           data={part.data as InteractiveSimulationData}
                         />
+                      ) : part.type === "diagram" ? (
+                        <DiagramView data={part.data} />
                       ) : (
                         <GraphView graph={part.data as GraphData} />
                       )}

@@ -28,6 +28,9 @@ export interface SimulationData {
     | "collision"
     | "freefall"
     | "inclined_plane"
+    | "braking"
+    | "friction"
+    | "pulley"
     | "vertical_encounter";
   parameters: {
     v0?: number;

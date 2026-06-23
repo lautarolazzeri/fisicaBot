@@ -106,7 +106,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
             transition={{ duration: 0.6 }}
           >
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold mb-8 uppercase tracking-widest">
-              <div className="w-3.5 h-3.5" />
               Proyecto de Física 2026
             </div>
             <h1 className="text-5xl md:text-7xl font-extrabold tracking-tighter mb-8 bg-clip-text text-transparent bg-linear-to-b from-white to-zinc-500">
@@ -114,9 +113,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
               <span className="text-blue-500"> Física Universitaria</span>
             </h1>
             <p className="max-w-2xl mx-auto text-zinc-400 text-lg md:text-xl leading-relaxed mb-12">
-              Orientado a la resolución y comprensión de problemas de mecánica
-              clásica, con explicaciones claras basadas en bibliografía
-              académica.
+              Orientado a la resolución y comprensión de problemas de física 1,
+              con explicaciones claras basadas en bibliografía académica.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
               <Button
@@ -177,8 +175,8 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onStartChat }) => {
                 </h3>
                 <p className="text-zinc-400 leading-relaxed">
                   Desarrollado a partir de bibliografía clásica de Física, como
-                  Sears-Zemansky, Serway y Resnick, garantizando un enfoque
-                  consistente con los contenidos académicos.
+                  Sears-Zemansky y apuntes de la cátedra, garantizando un
+                  enfoque consistente con los contenidos académicos.
                 </p>
               </CardContent>
             </Card>

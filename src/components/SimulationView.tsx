@@ -17,6 +17,7 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
   const [key, setKey] = useState(0); // For resetting the simulation
   const [worldWidth, setWorldWidth] = useState(600);
   const bodiesRef = useRef<Matter.Body[]>([]);
+  const ropeCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const scaleRef = useRef<number>(10);
 
   useEffect(() => {
@@ -25,6 +26,21 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
     // Reset components for new key
     const engine = Matter.Engine.create();
     engineRef.current = engine;
+
+    // Evitar que objetos apoyados en superficies caigan verticalmente
+    Matter.Events.on(engine, "beforeUpdate", () => {
+      bodiesRef.current.forEach((body) => {
+        if (body.label === "box") {
+          // Mantener el movimiento restringido a la superficie
+          if (body.velocity.y > 0) {
+            Matter.Body.setVelocity(body, {
+              x: body.velocity.x,
+              y: 0,
+            });
+          }
+        }
+      });
+    });
 
     // Default gravity from parameters or standard
     engine.gravity.y =
@@ -58,17 +74,10 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
           ) + 10;
         maxDist = 20;
       }
-
-      // To allow scrolling for long trajectories, we can set a preferred scale
-      // but still respect the height of the container
       const scaleY = (screenHeight * 0.8) / maxHeight;
-
-      // We'll use a scale that is good for visibility but allows the canvas to expand horizontally
-      // If the trajectory fits naturally, scale will be 20. If it's long, it will scroll.
       scale = Math.min(scaleY, 20);
       if (scale < 0.5) scale = 0.5;
 
-      // Now compute the width needed for this scale
       computedWidth = Math.max(containerWidth, maxDist * scale + 100);
       setWorldWidth(computedWidth);
     } else {
@@ -97,6 +106,10 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
     Matter.Render.run(render);
 
     return () => {
+      (engine as any)._ropeActive = false;
+      if ((engine as any)._ropeAnimFrame) {
+        cancelAnimationFrame((engine as any)._ropeAnimFrame);
+      }
       Matter.Render.stop(render);
       Matter.Runner.stop(runner);
       Matter.Engine.clear(engine);
@@ -151,6 +164,36 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
             Matter.Body.setVelocity(bodies[i], { x: 0, y: -bodyConf.v0 });
           }
         });
+        break;
+      }
+      case "braking": {
+        const acceleration = sim.parameters.acceleration || -3;
+
+        if (bodies[0]) {
+          Matter.Body.setVelocity(bodies[0], {
+            x: acceleration,
+            y: 0,
+          });
+        }
+
+        break;
+      }
+      case "friction": {
+        const force = sim.parameters.force || 10;
+
+        if (bodies[0]) {
+          Matter.Body.applyForce(bodies[0], bodies[0].position, {
+            x: force / 1000,
+            y: 0,
+          });
+        }
+
+        break;
+      }
+      case "pulley": {
+        const state = (engineRef.current as any)._pulleyState;
+        if (state) state.activate();
+        bodiesRef.current = []; // limpiar para no re-aplicar
         break;
       }
     }
@@ -263,6 +306,45 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
         Matter.World.add(world, [body1, body2]);
         break;
       }
+      case "braking": {
+        const vehicle = Matter.Bodies.rectangle(
+          width / 2,
+          height - 40,
+          220,
+          40,
+          {
+            isStatic: false,
+            friction: 0.8,
+            frictionStatic: 0.8,
+            label: "truck",
+            render: {
+              fillStyle: "#27272a",
+            },
+          },
+        );
+
+        const box = Matter.Bodies.rectangle(width / 2, height - 80, 50, 50, {
+          mass: sim.parameters.mass || 5,
+          friction: sim.parameters.friction || 0.3,
+          frictionStatic: sim.parameters.friction || 0.3,
+          label: "box",
+          render: {
+            fillStyle: "#3b82f6",
+          },
+        });
+
+        // unir caja al camión
+        Matter.Body.setVelocity(box, {
+          x: 0,
+          y: 0,
+        });
+
+        Matter.World.add(world, [vehicle, box]);
+
+        bodiesRef.current = [vehicle, box];
+
+        break;
+      }
       case "freefall": {
         const ball = Matter.Bodies.circle(width / 2, 50, 15, {
           restitution: 0.6,
@@ -273,35 +355,229 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
       }
       case "inclined_plane": {
         const angle = (sim.parameters.angle || 30) * (Math.PI / 180);
+
+        const planeLength = width * 0.8;
+
         const plane = Matter.Bodies.rectangle(
           width / 2,
-          height - 50,
-          width * 0.8,
+          height - 60,
+          planeLength,
           20,
           {
             isStatic: true,
             angle: angle,
+            label: "inclined_plane",
+            render: {
+              fillStyle: "#27272a",
+            },
+          },
+        );
+
+        const box = Matter.Bodies.rectangle(
+          width * 0.25,
+          height - 120,
+          35,
+          35,
+          {
+            friction: sim.parameters.friction || 0.3,
+
+            frictionStatic: sim.parameters.friction || 0.3,
+
+            restitution: 0,
+
+            render: {
+              fillStyle: "#3b82f6",
+            },
+          },
+        );
+
+        // IMPORTANTE:
+        // elimina componente vertical libre
+
+        Matter.Body.setVelocity(box, {
+          x: 0,
+          y: 0,
+        });
+
+        Matter.World.add(world, [plane, box]);
+
+        bodiesRef.current = [box];
+
+        break;
+      }
+      case "pulley": {
+        const m1 = Number(sim.parameters.mass1) || 5;
+        const m2 = Number(sim.parameters.mass2) || 3;
+        const mu = Number(sim.parameters.friction) || 0;
+        const g = Number(sim.parameters.gravity) || 9.8;
+
+        const tableY = height - 120; // mesa más arriba
+        const blockSize = 46;
+        const hangingSize = 42;
+        const pulleyR = 22;
+
+        const pulleyX = width * 0.72;
+        const pulleyY = tableY - pulleyR; // polea apoyada sobre el borde de la mesa
+
+        const blockStartX = width * 0.28;
+        const blockY = tableY - blockSize / 2 - 1; // bloque sobre la mesa
+
+        const hangingStartY = pulleyY + pulleyR + hangingSize / 2 + 4; // colgando justo debajo de la polea
+
+        // Mesa
+        const table = Matter.Bodies.rectangle(
+          width / 2,
+          tableY,
+          width * 0.65,
+          18,
+          {
+            isStatic: true,
             render: { fillStyle: "#27272a" },
           },
         );
 
-        const box = Matter.Bodies.rectangle(width * 0.2, height - 150, 30, 30, {
-          friction: sim.parameters.friction || 0.1,
-          angle: angle,
-          render: { fillStyle: "#3b82f6" },
+        // Bloque azul (sobre mesa)
+        const block = Matter.Bodies.rectangle(
+          blockStartX,
+          blockY,
+          blockSize,
+          blockSize,
+          {
+            isStatic: true,
+            render: { fillStyle: "#3b82f6" },
+            label: "pulley_block",
+            collisionFilter: { mask: 0 },
+          },
+        );
+
+        // Polea
+        const pulleyBody = Matter.Bodies.circle(pulleyX, pulleyY, pulleyR, {
+          isStatic: true,
+          collisionFilter: { mask: 0 },
+          render: { fillStyle: "#71717a" },
         });
 
-        Matter.World.add(world, [plane, box]);
+        // Masa colgante roja (arranca justo debajo de la polea, en el borde)
+        const hanging = Matter.Bodies.rectangle(
+          pulleyX,
+          hangingStartY,
+          hangingSize,
+          hangingSize,
+          {
+            isStatic: true,
+            render: { fillStyle: "#ef4444" },
+            label: "pulley_hanging",
+            collisionFilter: { mask: 0 },
+          },
+        );
+
+        // Aceleración de Atwood
+        const rawA = (m2 * g - mu * m1 * g) / (m1 + m2);
+        const a = Math.max(0, rawA);
+
+        let velocity = 0;
+        let blockX = blockStartX;
+        let hangingY = hangingStartY;
+        let active = false;
+
+        const MAX_BLOCK_X = pulleyX - blockSize / 2 - 4;
+        const MAX_HANGING_Y = height - hangingSize / 2 - 10;
+        const PIXELS_PER_METER = 40;
+
+        (engine as any)._pulleyState = {
+          activate: () => {
+            active = true;
+          },
+          reset: () => {
+            active = false;
+            velocity = 0;
+            blockX = blockStartX;
+            hangingY = hangingStartY;
+            Matter.Body.setPosition(block, { x: blockStartX, y: blockY });
+            Matter.Body.setPosition(hanging, { x: pulleyX, y: hangingStartY });
+          },
+        };
+
+        Matter.Events.on(engine, "beforeUpdate", (event: any) => {
+          if (!active) return;
+
+          const dt = event.delta / 1000;
+          velocity += a * dt;
+
+          blockX = Math.min(
+            blockX + velocity * PIXELS_PER_METER * dt,
+            MAX_BLOCK_X,
+          );
+          hangingY = Math.min(
+            hangingY + velocity * PIXELS_PER_METER * dt,
+            MAX_HANGING_Y,
+          );
+
+          if (blockX >= MAX_BLOCK_X || hangingY >= MAX_HANGING_Y) {
+            velocity = 0;
+            active = false;
+          }
+
+          Matter.Body.setPosition(block, { x: blockX, y: blockY });
+          Matter.Body.setPosition(hanging, { x: pulleyX, y: hangingY });
+        });
+
+        // Cuerda: usar el canvas del render directamente
+        const drawRope = () => {
+          if (!(engine as any)._ropeActive) return;
+
+          const canvas = ropeCanvasRef.current;
+          if (!canvas) {
+            (engine as any)._ropeAnimFrame = requestAnimationFrame(drawRope);
+            return;
+          }
+
+          const ctx = canvas.getContext("2d");
+          if (!ctx) {
+            (engine as any)._ropeAnimFrame = requestAnimationFrame(drawRope);
+            return;
+          }
+
+          // Limpiar canvas propio (no el de Matter)
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+          ctx.strokeStyle = "#d4d4d8";
+          ctx.lineWidth = 2.5;
+          ctx.lineJoin = "round";
+          ctx.lineCap = "round";
+          ctx.beginPath();
+          ctx.moveTo(block.position.x + blockSize / 2, block.position.y);
+          ctx.lineTo(pulleyX, pulleyY);
+          ctx.lineTo(pulleyX, hanging.position.y - hangingSize / 2);
+          ctx.stroke();
+
+          (engine as any)._ropeAnimFrame = requestAnimationFrame(drawRope);
+        };
+
+        (engine as any)._ropeActive = true;
+        (engine as any)._ropeAnimFrame = requestAnimationFrame(drawRope);
+
+        Matter.World.add(world, [table, block, pulleyBody, hanging]);
+        bodiesRef.current = [block, hanging];
         break;
       }
     }
   };
+
+  useEffect(() => {
+    if (ropeCanvasRef.current) {
+      ropeCanvasRef.current.width = worldWidth;
+    }
+  }, [worldWidth]);
 
   const handleToggle = () => {
     setIsPlaying(!isPlaying);
   };
 
   const handleReset = () => {
+    // Limpiar estado de pulley si existe
+    const state = (engineRef.current as any)?._pulleyState;
+    if (state) state.reset();
     setIsPlaying(false);
     setKey((prev) => prev + 1);
   };
@@ -335,10 +611,25 @@ export const SimulationView: React.FC<SimulationViewProps> = ({ data }) => {
       </div>
       <div className="overflow-x-auto overflow-y-hidden w-full custom-scrollbar">
         <div
-          ref={sceneRef}
-          className="relative cursor-crosshair h-75"
-          style={{ width: worldWidth }}
-        />
+          className="relative cursor-crosshair"
+          style={{ width: worldWidth, height: 300 }}
+        >
+          <div
+            ref={sceneRef}
+            style={{ position: "absolute", top: 0, left: 0 }}
+          />
+          <canvas
+            ref={ropeCanvasRef}
+            width={worldWidth}
+            height={300}
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              pointerEvents: "none",
+            }}
+          />
+        </div>
       </div>
       <div className="p-2 bg-zinc-950 text-[10px] text-zinc-500 font-mono text-center flex flex-wrap gap-x-4 justify-center">
         <span>Escenario: {data.scenario}</span>
