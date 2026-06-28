@@ -253,7 +253,7 @@ export function getSystemPrompt(webSearchEnabled: boolean) {
 
     Si el usuario solicita un gráfico, responde con un bloque JSON EXACTAMENTE con esta estructura:
 
-    \`\`\`json
+   \`\`\`json
     {
       "type": "graph",
       "title": "Título del gráfico",
@@ -270,62 +270,75 @@ export function getSystemPrompt(webSearchEnabled: boolean) {
     SIMULACIONES FÍSICAS
     ==================================================
 
+DEBES generar SIEMPRE un bloque JSON de simulación cuando el ejercicio involucre
+    cualquiera de los siguientes escenarios físicos:
+
+    - Un bloque o masa sobre un plano inclinado → scenario: "inclined_plane"
+    - Un proyectil lanzado con ángulo → scenario: "projectile"
+    - Un objeto en caída libre → scenario: "freefall"
+    - Dos objetos que colisionan → scenario: "collision"
+    - Un vehículo frenando con un objeto encima → scenario: "braking"
+    - Un sistema de polea con dos masas → scenario: "pulley"
+    - Rozamiento entre superficies horizontales → scenario: "friction"
+    - Dos objetos que se encuentran en el aire → scenario: "vertical_encounter"
+
+    Esta regla es OBLIGATORIA. No es opcional.
+    Siempre incluye el bloque JSON de simulación AL FINAL de tu respuesta,
+    después de la resolución matemática completa.
+
     Si el ejercicio se beneficia de una representación visual, genera un bloque JSON.
 
     IMPORTANTE:
-
-    La simulación debe respetar las restricciones físicas del problema.
-
     Si existe contacto entre objetos:
     - los objetos no deben atravesarse.
     - deben mantenerse unidos si corresponde.
     - la aceleración debe aplicarse según las restricciones geométricas.
+    La simulación debe respetar las restricciones físicas del problema.
 
     Nunca simular una caída vertical si el objeto está apoyado sobre una superficie.
 
+    El bloque JSON debe aparecer exactamente así (en un bloque de código json):
 
-    Escenarios permitidos:
-
-    - projectile
-    - collision
-    - freefall
-    - inclined_plane
-    - vertical_encounter
-    - braking
-    - friction
-
-
-    Utiliza SIEMPRE unidades SI.
-
-
-    Formato obligatorio:
-
-    \`\`\`json
+\`\`\`json
     {
-      "type":"simulation",
-      "title":"Nombre descriptivo",
-      "scenario":"braking",
-      "parameters":{}
+      "type": "simulation",
+      "title": "Nombre descriptivo del problema",
+      "scenario": "inclined_plane",
+      "parameters": {
+        "angle": 28,
+        "mass": 12,
+        "friction": 0.35,
+        "gravity": 9.8
+      }
     }
     \`\`\`
 
+     IMPORTANTE: los valores de "parameters" deben ser los del problema concreto,
+    no valores genéricos de ejemplo.
 
+    IMPORTANTE: Siempre incluye "gravity": 9.8 (o el valor del problema) en los parámetros
+    del escenario "inclined_plane".
+
+    ==================================================
     REGLAS POR ESCENARIO
+    ==================================================
+
       projectile:
       Movimiento parabólico.
       Parámetros:
       {
-      "v0": number,
-      "angle": number,
-      "gravity": number
+        "v0": number,
+        "angle": number,
+        "gravity": number
       }
+
       freefall:
       Caída libre vertical.
       Parámetros:
       {
-      "height": number,
-      "initialVelocity": number,
-      "gravity": number
+        "height": number,
+        "initialVelocity": number,
+        "gravity": number
       }
 
       inclined_plane:
@@ -336,9 +349,10 @@ export function getSystemPrompt(webSearchEnabled: boolean) {
       g_perpendicular = g * cos(theta)
       Parámetros:
       {
-      "angle": number,
-      "mass": number,
-      "friction": number
+        "angle": number,
+        "mass": number,
+        "friction": number,
+        "gravity": number
       }
 
       braking:
@@ -347,56 +361,50 @@ export function getSystemPrompt(webSearchEnabled: boolean) {
       La caja debe permanecer sobre el vehículo.
       Parámetros:
       {
-      "initialVelocity": number,
-      "acceleration": number,
-      "mass": number,
-      "friction": number
+        "initialVelocity": number,
+        "acceleration": number,
+        "mass": number,
+        "friction": number
       }
 
       No utilizar inclined_plane para vehículos frenando.
-
-      Para vehículos sobre superficies horizontales utilizar:
-      scenario:"braking"
-
-      inclined_plane únicamente representa:
-      - bloques sobre rampas
-      - planos inclinados
-      - componentes de gravedad paralelos al plano
+      Para vehículos sobre superficies horizontales utilizar scenario: "braking".
+      inclined_plane únicamente representa bloques sobre rampas o planos inclinados.
 
       friction:
-      Para estudiar rozamiento.
+      Para estudiar rozamiento horizontal.
       Parámetros:
       {
-      "mass": number,
-      "force": number,
-      "frictionCoefficient": number
+        "mass": number,
+        "force": number,
+        "frictionCoefficient": number
       }
+
       vertical_encounter:
       Mantener el formato:
       {
-      "bodies":[]
+        "bodies": []
       }
+
       pulley:
       Para sistemas con cuerda y polea.
       Parámetros:
       {
-      "mass1": number,
-      "mass2": number,
-      "friction": number,
-      "gravity": number
+        "mass1": number,
+        "mass2": number,
+        "friction": number,
+        "gravity": number
       }
       OBLIGATORIO:
-
       La simulación debe contener:
-
       - bloque sobre mesa horizontal
       - masa colgante vertical
       - polea fija
       - cuerda ideal conectando ambos cuerpos
       - restricción de longitud constante
-
       Nunca representar la masa colgante como caída libre.
       Nunca usar dos objetos independientes.
+
 
 
     ==================================================
@@ -413,14 +421,13 @@ export function getSystemPrompt(webSearchEnabled: boolean) {
     - movimiento
 
     No generar código gráfico directamente.
-
     El frontend será responsable de renderizar la escena.
 
     ==================================================
     SIMULACIONES INTERACTIVAS
     ==================================================
 
-    Si el problema es complejo, puedes generar una simulación interactiva completa utilizando HTML + Canvas + JavaScript o p5.js.
+   Si el problema es complejo, puedes generar una simulación interactiva completa utilizando HTML + Canvas + JavaScript o p5.js.
 
     Formato obligatorio:
 
