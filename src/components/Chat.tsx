@@ -29,6 +29,7 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { InteractiveSimulationView } from "./ui/InteractiveSimulationView";
 import { DiagramView } from "./DiagramView";
+import "@/src/index.css";
 
 interface ChatProps {
   onFilesUploaded?: (files: Attachment[]) => void;
@@ -55,6 +56,45 @@ export const Chat: React.FC<ChatProps> = ({
   const [attachments, setAttachments] = useState<Attachment[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loadingPhraseIndex, setLoadingPhraseIndex] = useState(0);
+  const [showPhrase, setShowPhrase] = useState(true);
+  const loadingPhrases = [
+    "Analizando el problema...",
+    "Repasando fórmulas y variables...",
+    "Verificando unidades y magnitudes...",
+    "Construyendo la respuesta...",
+  ];
+
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingPhraseIndex(0);
+      setShowPhrase(true);
+      return;
+    }
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    const cycle = (index: number) => {
+      // Si ya llegamos a la última frase, no programa más cambios
+      if (index >= loadingPhrases.length - 1) return;
+
+      // Tiempo que la frase queda visible antes de empezar a desvanecerse
+      timeoutId = setTimeout(() => {
+        setShowPhrase(false); // dispara el fade out
+
+        // Espera a que termine el fade out (debe coincidir con la transición CSS)
+        timeoutId = setTimeout(() => {
+          setLoadingPhraseIndex(index + 1);
+          setShowPhrase(true); // dispara el fade in
+          cycle(index + 1);
+        }, 300); // duración del fade out
+      }, 1900); // tiempo visible antes de desvanecer
+    };
+
+    cycle(0);
+
+    return () => clearTimeout(timeoutId);
+  }, [isLoading]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -304,23 +344,25 @@ export const Chat: React.FC<ChatProps> = ({
           ))}
           {isLoading && (
             <div className="flex gap-4">
-              <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-blue-600/20 flex items-center justify-center shrink-0">
                 <Loader2 className="w-4 h-4 text-blue-400 animate-spin" />
               </div>
-              <div className="bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl rounded-tl-none">
-                <div className="flex gap-1">
-                  <span
-                    className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-bounce"
-                    style={{ animationDelay: "0ms" }}
-                  />
-                  <span
-                    className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-bounce"
-                    style={{ animationDelay: "150ms" }}
-                  />
-                  <span
-                    className="w-1.5 h-1.5 bg-zinc-600 rounded-full animate-bounce"
-                    style={{ animationDelay: "300ms" }}
-                  />
+              <div className="bg-zinc-900/50 border border-zinc-800 p-4 rounded-2xl rounded-tl-none min-w-[200px]">
+                <div className="relative h-5 overflow-hidden">
+                  <div
+                    className={cn(
+                      "flex items-center gap-2 text-xs text-zinc-400 transition-all duration-300 ease-in-out",
+                      showPhrase
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 -translate-y-1.5",
+                    )}
+                  >
+                    <span className="relative flex h-1.5 w-1.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-blue-500" />
+                    </span>
+                    {loadingPhrases[loadingPhraseIndex]}
+                  </div>
                 </div>
               </div>
             </div>
